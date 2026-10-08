@@ -1,4 +1,9 @@
+import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import './App.css'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const menuSections = [
   {
@@ -82,9 +87,72 @@ function PinIcon() {
 }
 
 function App() {
+  const pageRef = useRef(null)
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const context = gsap.context(() => {
+      const intro = gsap.timeline({ defaults: { ease: 'power3.out' } })
+
+      intro
+        .from('.site-header', { y: -16, autoAlpha: 0, duration: 0.55 })
+        .from('.hero-copy > *', { y: 22, autoAlpha: 0, duration: 0.65, stagger: 0.09 }, '-=0.28')
+        .from('.hero-image', { scale: 1.045, autoAlpha: 0, duration: 1.15, ease: 'power2.out' }, '<')
+        .from('.hero-stamp', { scale: 0.78, rotate: -6, autoAlpha: 0, duration: 0.6 }, '-=0.55')
+        .from('.hero-caption, .hero-vertical', { autoAlpha: 0, duration: 0.45 }, '-=0.25')
+
+      gsap.from('.section-heading > *', {
+        y: 24,
+        autoAlpha: 0,
+        duration: 0.65,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.section-heading', start: 'top 82%' },
+      })
+
+      gsap.from('.menu-card', {
+        y: 28,
+        autoAlpha: 0,
+        duration: 0.65,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.menu-grid', start: 'top 78%' },
+      })
+
+      gsap.from('.delivery-copy > *', {
+        x: 26,
+        autoAlpha: 0,
+        duration: 0.7,
+        stagger: 0.1,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.delivery-section', start: 'top 75%' },
+      })
+
+      gsap.from('.quality-badge', {
+        scale: 0.78,
+        rotate: -8,
+        autoAlpha: 0,
+        duration: 0.7,
+        ease: 'back.out(1.5)',
+        scrollTrigger: { trigger: '.delivery-section', start: 'top 75%' },
+      })
+
+      gsap.from('.footer-top > *', {
+        y: 20,
+        autoAlpha: 0,
+        duration: 0.6,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: '.site-footer', start: 'top 88%' },
+      })
+    }, pageRef)
+
+    return () => context.revert()
+  }, [])
 
   return (
-    <main>
+    <main ref={pageRef}>
       <header className="site-header">
         <a className="brand" href="#home" aria-label="Shoaibees Restaurant home">
           <span className="brand-mark">S<span>.</span></span>
